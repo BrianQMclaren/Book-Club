@@ -24,9 +24,9 @@ filterCheckbox.addEventListener('change', (e) => {
     for(let i = 0; i < lis.length; i++) {
       let li = lis[i];
       if (li.className === 'responded') {
-        li.style.display = '';
-      } else {
         li.style.display = 'none';
+      } else {
+        li.style.display = '';
       }
     }
   } else {
@@ -55,12 +55,12 @@ function createLI(text) {
   appendToLI('span', 'textContent', text);
 
 
-  appendToLI('label', 'textContent', 'Completed')
+  appendToLI('label', 'textContent', 'Complete')
   .appendChild(createElement('input', 'type', 'checkbox'));
 
 
-
-  const rating = document.createElement('label', 'textContent', 'Rating:');
+  const rating = document.createElement('label');
+  rating.textContent = 'Rating:';
   for (let i = 0; i < 5; i++) {
     const stars = document.createElement('span');
     stars.className = 'fa fa-star';
@@ -82,6 +82,12 @@ form.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const text = input.value;
   input.value = '';
+  for(let i = 0; i < ul.children.length; i++) {
+    if (text == ul.children[i].children[0].textContent) {
+      alert("Oops that name is already taken please enter in another.");
+      return;
+    }
+  }
   const li = createLI(text);
   ul.appendChild(li);
 });
@@ -90,11 +96,14 @@ ul.addEventListener('change', (evt) => {
   const checkbox = evt.target;
   const checked = checkbox.checked;
   const listItem = checkbox.parentNode.parentNode;
-
+  const text = listItem.getElementsByTagName('label')[0].childNodes[0];
   if (checked) {
     listItem.className = 'responded';
+    text.textContent = 'Completed';
+
   } else {
     listItem.className = '';
+    text.textContent = 'Complete';
   }
 });
 
@@ -108,7 +117,8 @@ ul.addEventListener('click', (evt) => {
     const button = evt.target;
     const li = button.parentNode;
     const ul = li.parentNode;
-    const action = button.textContent;
+    const action = button.textContent.toLowerCase();
+
     const nameActions = {
       remove: () => {
         ul.removeChild(li);
@@ -135,4 +145,4 @@ ul.addEventListener('click', (evt) => {
     //Select and run in button name
     nameActions[action]();
   }
-})
+});
